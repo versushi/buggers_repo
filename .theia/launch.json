@@ -15,6 +15,46 @@
                 "name": "Lab01.5.1",
                 "resourceId": "/Lab01.5.1"
             }
+        },
+        {
+            "name": "Lab01.5.2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab01.5.2",
+                "resourceId": "/Lab01.5.2"
+            },
+            "connections": [
+                {
+                    "name": "TI MSP430 USB1",
+                    "cores": [
+                        {
+                            "name": "MSP430",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues>\n\n  <property id=\"ModuleClockControl0\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl1\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl2\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl3\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl4\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl5\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl6\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl7\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl8\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControl9\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControlA\">\n    <curValue>1</curValue>\n  </property>\n\n  <property id=\"ModuleClockControlB\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControlC\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControlE\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"ModuleClockControlF\">\n    <curValue>0</curValue>\n  </property>\n\n  <property id=\"MSP430EraseStartAddress\">\n    <curValue>4400</curValue>\n  </property>\n\n  <property id=\"MSP430EraseEndAddress\">\n    <curValue>23fff</curValue>\n  </property>\n\n  <property id=\"FlashFiles\">\n    <curValue></curValue>\n  </property>\n\n</PropertyValues>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Lab01.4.1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab01.4.1",
+                "resourceId": "/Lab01.4.1"
+            }
+        },
+        {
+            "name": "Lab01.4.2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab01.4.2",
+                "resourceId": "/Lab01.4.2"
+            }
         }
     ]
 }
