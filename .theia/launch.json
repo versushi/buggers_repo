@@ -1,6 +1,20 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  "version": "0.2.0",
-  "configurations": []
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "MSP430FR6989.ccxml",
+            "type": "ccs-debug",
+            "request": "launch",
+            "targetConfig": "${workspaceFolder}\\Embedded Systems\\Lab01\\targetConfigs\\MSP430FR6989.ccxml"
+        },
+        {
+            "name": "Lab01",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab01",
+                "resourceId": "/Lab01"
+            }
+        }
+    ]
 }
