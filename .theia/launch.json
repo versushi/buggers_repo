@@ -8,12 +8,12 @@
             "targetConfig": "${workspaceFolder}\\Embedded Systems\\Lab01\\targetConfigs\\MSP430FR6989.ccxml"
         },
         {
-            "name": "Lab01",
+            "name": "Lab01.5.1",
             "type": "ccs-debug",
             "request": "launch",
             "projectInfo": {
-                "name": "Lab01",
-                "resourceId": "/Lab01"
+                "name": "Lab01.5.1",
+                "resourceId": "/Lab01.5.1"
             }
         }
     ]
