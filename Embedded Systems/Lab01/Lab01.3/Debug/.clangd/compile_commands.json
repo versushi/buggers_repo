@@ -1,0 +1,7 @@
+[
+   {
+      "directory" : "C:/Users/Miami/Documents/buggers_repo/Embedded Systems/Lab01.3/Debug",
+      "command"   : "clang++ -I\"C:/ti/ccs2101/ccs/ccs_base/msp430/include\" -I\"C:/Users/Miami/Documents/buggers_repo/Embedded Systems/Lab01.3\" -I\"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include\" -D__MSP430FR6989__ -D_MPU_ENABLE -xc",
+      "file"      : "C:/Users/Miami/Documents/buggers_repo/Embedded Systems/Lab01.3/Lab01.3_main.c"
+   }
+]
