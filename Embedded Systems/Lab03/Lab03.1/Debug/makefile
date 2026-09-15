@@ -10,7 +10,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./1.5.1_main.obj" \
+"./Lab03.1_main.obj" \
 "../lnk_msp430fr6989.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibmpu_init.a \
@@ -116,28 +116,28 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Lab01.5.1.out 
+Lab03.01.out 
 
 EXE_OUTPUTS__QUOTED += \
-"Lab01.5.1.out" 
+"Lab03.01.out" 
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "Lab01.5.1.out"
+	@$(MAKE) --no-print-directory -Onone "Lab03.01.out"
 
 # Tool invocations
-Lab01.5.1.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+Lab03.01.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'MSP430 Linker - building target: "$@"'
-	"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR6989__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"Lab01.5.1.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs2101/ccs/ccs_base/msp430/include" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/FR59xx" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/lib" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include" --priority --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab01.5.1_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab01.5.1.out" $(ORDERED_OBJS)
+	"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR6989__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"Lab03.01.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs2101/ccs/ccs_base/msp430/include" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/FR59xx" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/lib" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include" --priority --reread_libs --define=_MPU_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab03.01_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab03.01.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "1.5.1_main.obj" 
-	-$(RM) "1.5.1_main.d" 
+	-$(RM) "Lab03.1_main.obj" 
+	-$(RM) "Lab03.1_main.d" 
 	-@echo ' '
 
 .PHONY: all clean dependents

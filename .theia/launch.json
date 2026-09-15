@@ -53,15 +53,6 @@
             }
         },
         {
-            "name": "Lab02.2",
-            "type": "ccs-debug",
-            "request": "launch",
-            "projectInfo": {
-                "name": "Lab02.2",
-                "resourceId": "/Lab02.2"
-            }
-        },
-        {
             "name": "Lab02.3",
             "type": "ccs-debug",
             "request": "launch",
@@ -77,6 +68,33 @@
             "projectInfo": {
                 "name": "Lab02.4",
                 "resourceId": "/Lab02.4"
+            }
+        },
+        {
+            "name": "Lab01.5.2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab01.5.2",
+                "resourceId": "/Lab01.5.2"
+            }
+        },
+        {
+            "name": "Lab02.2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab02.2",
+                "resourceId": "/Lab02.2"
+            }
+        },
+        {
+            "name": "Lab03.01",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab03.01",
+                "resourceId": "/Lab03.01"
             }
         }
     ]

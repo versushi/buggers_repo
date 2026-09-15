@@ -18,7 +18,9 @@ void main(void){
 	P1DIR = ~(BUT1 | BUT2);		// Direct pin as input
 	P1REN |= BUT1 | BUT2;    	// Enable the built-in resistor
 	P1OUT |= BUT1 | BUT2; 		// Set resistor as pull-up
-
+//
+// CASE 3 IF BOTH ARE PRESSED AT THE EXACT SAME TIME
+//
 	// Polling the button in an infinite loop
 	for (;;){
 		if(((P1IN & BUT1) == 0) && ((P1IN & BUT2) != 0)){

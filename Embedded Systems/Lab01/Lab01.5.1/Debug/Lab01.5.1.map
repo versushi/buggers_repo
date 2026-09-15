@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v21.6.3                     
 ******************************************************************************
->> Linked Thu Sep  3 12:02:05 2026
+>> Linked Tue Sep 15 13:28:42 2026
 
 OUTPUT FILE NAME:   <Lab01.5.1.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_mpu"  address: 00004400
@@ -231,7 +231,7 @@ SYSNMI     0    0000fffc    00000002
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.c.obj (.reset)
 
 .text      0    00010000    00000138     
-                  00010000    00000102     main.obj (.text:main)
+                  00010000    00000102     1.5.1_main.obj (.text:main)
                   00010102    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
                   0001012e    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
                   00010134    00000004                            : pre_init.c.obj (.text:_system_pre_init)
@@ -241,7 +241,7 @@ MODULE SUMMARY
        Module             code   ro data   rw data
        ------             ----   -------   -------
     .\
-       main.obj           258    0         0      
+       1.5.1_main.obj     258    0         0      
     +--+------------------+------+---------+---------+
        Total:             258    0         0      
                                                   
