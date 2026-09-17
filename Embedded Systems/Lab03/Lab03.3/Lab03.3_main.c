@@ -28,19 +28,32 @@ void main(void) {
 	config_ACLK_to_32KHz_crystal();
 // Configure Timer_A
 // Use ACLK, divide by 1, IN STOP MODE (MC_0) TO SAVE POWER, clear TAR
-	TA0CTL =  TASSEL_1 | ID_0 | MC_0 | TACLR;
+	TA0CTL =  TASSEL_1| ID_0 | MC_0 | TACLR;
 // Ensure flag is cleared at the start
 	TA0CTL &= ~TAIFG;
 // Infinite loop // WORK FROM HERE
 	for(;;) {
-// Wait for the button to be pressed then begin the timer
+// Wait for the button to be pressed then begin the timer in Continuous mode
 		while((P1IN & BUT1) =! 0){}
-		TA0CTL =  TASSEL_1 | ID_0 | MC_1 | TACLR;
-// Wait in this empty loop for the flag to raise 
-		while(TA0CTL & TAIFG){} // delay
-// Do the action here
-		P1OUT ^= redLED; 	// toggle redLED
-		TA0CTL &= ~TAIFG;	// Resets flag
+		TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
+// Wait in this empty loop until the button is released, once released turn led on
+		while((P1IN & BUT1) == 0){}
+		P1OUT |= redLED;
+// Stop timer and set the target
+		TA0CTL &= ~MC_3;
+		
+		if( TA0R != 0){
+			TAOCCR0 = TA0R;
+			TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
+			 // Wait until the counter reaches the saved count
+        	while ((TA0CCTL0 & CCIFG) == 0) {}
+        	TA0CTL &= ~MC_3;
+		}P1OUT &= ~redLED;
+		else if (TA0R = 0){
+			P9OUT |= greenLED;
+			while((P9IN & BUT2) =! 0){}
+			P9OUT &= ~greenLED;
+		}
 	}
 }
 
