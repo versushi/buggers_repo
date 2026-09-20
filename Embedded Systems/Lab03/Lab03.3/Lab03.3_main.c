@@ -10,6 +10,7 @@ void config_ACLK_to_32KHz_crystal();
 #define greenLED BIT7 	// Green LED at P9.7
 #define BUT1 BIT1		// Button S1 at P1.1
 #define BUT2 BIT2		// Button S2 at P1.2
+uint16_t targetTime;
 
 void main(void) {
 // Stop the Watchdog timer & Unlock the GPIO pins
@@ -21,38 +22,57 @@ void main(void) {
 	P1OUT &= ~redLED; 		// Turn LED off
 	P9OUT &= ~greenLED; 	// Turn LED off
 // Configure buttons 
-	P1DIR = ~(BUT1 | BUT2);		// Direct pin as input
+	P1DIR &= ~(BUT1 | BUT2);		// Direct pin as input
 	P1REN |= BUT1 | BUT2;    	// Enable the built-in resistor
 	P1OUT |= BUT1 | BUT2; 		// Set resistor as pull-up
+
 // Configure ACLK to the 32 KHz crystal (function call)
 	config_ACLK_to_32KHz_crystal();
+// Helper for timer configuration
+// Timer_A0
+// │
+// ├── TA0CTL       Overall timer configuration
+// ├── TA0R         Current counter value
+// │
+// └── Channel 0
+//     ├── TA0CCR0  Target compare value
+//     └── TA0CCTL0 Channel configuration and CCIFG
 // Configure Timer_A
-// Use ACLK, divide by 1, IN STOP MODE (MC_0) TO SAVE POWER, clear TAR
-	TA0CTL =  TASSEL_1| ID_0 | MC_0 | TACLR;
-// Ensure flag is cleared at the start
-	TA0CTL &= ~TAIFG;
-// Infinite loop // WORK FROM HERE
+// Infinite loop
 	for(;;) {
+// Use ACLK, divide by 1, IN STOP MODE (MC_0) TO SAVE POWER, clear TAR
+		TA0CTL =  TASSEL_1| ID_0 | MC_0 | TACLR;
+// Ensure flag of the main clock is cleared at the start
+		TA0CTL &= ~TAIFG;
 // Wait for the button to be pressed then begin the timer in Continuous mode
-		while((P1IN & BUT1) =! 0){}
+		while((P1IN & BUT1) != 0){}
 		TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
 // Wait in this empty loop until the button is released, once released turn led on
 		while((P1IN & BUT1) == 0){}
-		P1OUT |= redLED;
 // Stop timer and set the target
 		TA0CTL &= ~MC_3;
-		
-		if( TA0R != 0){
-			TAOCCR0 = TA0R;
-			TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
-			 // Wait until the counter reaches the saved count
+		targetTime = TA0R;
+// Case if timer triggers the limit
+		if ((TA0CTL & TAIFG) != 0){
+			P1OUT &= ~redLED;
+			P9OUT |= greenLED;
+			//Waits for button 2 to turn off GreenLED
+			while((P1IN & BUT2) != 0){}
+			while ((P1IN & BUT2) == 0) {}
+			P9OUT &= ~greenLED;
+		}
+// Case if timer is withint limit
+		if( (TA0CTL & TAIFG) == 0){
+			// Set the current count to the targeted count
+			TA0CCR0 = targetTime;
+			// Clear the flag of the secondary timer
+			TA0CCTL0 &= ~CCIFG;
+			TA0CTL = TASSEL_1 | ID_0 | MC_1 | TACLR;
+			P1OUT |= redLED;
+			// Wait until the counter reaches the saved count
         	while ((TA0CCTL0 & CCIFG) == 0) {}
         	TA0CTL &= ~MC_3;
-		}P1OUT &= ~redLED;
-		else if (TA0R = 0){
-			P9OUT |= greenLED;
-			while((P9IN & BUT2) =! 0){}
-			P9OUT &= ~greenLED;
+			P1OUT &= ~redLED;
 		}
 	}
 }
