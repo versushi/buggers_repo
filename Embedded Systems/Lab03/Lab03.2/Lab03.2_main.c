@@ -24,7 +24,9 @@ void main(void) {
 	TA0CTL =  TASSEL_1 | ID_0 | MC_1 | TACLR;
 // Ensure flag is cleared at the start
 	TA0CTL &= ~TAIFG;
-	TA0CCR0 = 32768 - 1;	// Sets the target frequency
+	// TA0CCR0 = 32767;	// Sets the target count
+	TA0CCR0 = 3276;		// We get 0.1 second delay between toggles
+	//TA0CCR0 = 327;		// Sets a 0.01 second delay 
 // Infinite loop
 	for(;;) {
 // Wait in this empty loop for the flag to raise 

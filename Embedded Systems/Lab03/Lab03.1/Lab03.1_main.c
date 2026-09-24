@@ -21,7 +21,7 @@ void main(void) {
 	config_ACLK_to_32KHz_crystal();
 // Configure Timer_A
 // Use ACLK, divide by 1, continuous mode, clear TAR
-	TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
+	TA0CTL =  TASSEL_1 | ID_2 | MC_2 | TACLR;
 // Ensure flag is cleared at the start
 	TA0CTL &= ~TAIFG;
 // Infinite loop

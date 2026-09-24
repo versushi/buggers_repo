@@ -47,22 +47,29 @@ void main(void) {
 // Wait for the button to be pressed then begin the timer in Continuous mode
 		while((P1IN & BUT1) != 0){}
 		TA0CTL =  TASSEL_1 | ID_0 | MC_2 | TACLR;
-// Wait in this empty loop until the button is released, once released turn led on
-		while((P1IN & BUT1) == 0){}
+
+		// Wait in this empty loop until the button is released, once released turn led on
+		while((P1IN & BUT1) == 0){
+			// Case if timer triggers the limit
+			if ((TA0CTL & TAIFG) != 0){
+				P1OUT &= ~redLED;
+				P9OUT |= greenLED;
+			}
+		}
+
 // Stop timer and set the target
-		TA0CTL &= ~MC_3;
+		TA0CTL &= MC_0;
 		targetTime = TA0R;
-// Case if timer triggers the limit
-		if ((TA0CTL & TAIFG) != 0){
-			P1OUT &= ~redLED;
-			P9OUT |= greenLED;
-			//Waits for button 2 to turn off GreenLED
+
+//Waits for button 2 to turn off GreenLED
+		if (P9OUT & greenLED != 0){
 			while((P1IN & BUT2) != 0){}
 			while ((P1IN & BUT2) == 0) {}
 			P9OUT &= ~greenLED;
 		}
+
 // Case if timer is withint limit
-		if( (TA0CTL & TAIFG) == 0){
+		else if( (TA0CTL & TAIFG) == 0){
 			// Set the current count to the targeted count
 			TA0CCR0 = targetTime;
 			// Clear the flag of the secondary timer
@@ -71,7 +78,7 @@ void main(void) {
 			P1OUT |= redLED;
 			// Wait until the counter reaches the saved count
         	while ((TA0CCTL0 & CCIFG) == 0) {}
-        	TA0CTL &= ~MC_3;
+        	TA0CTL|= MC_0;
 			P1OUT &= ~redLED;
 		}
 	}
