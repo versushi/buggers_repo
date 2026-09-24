@@ -52,22 +52,20 @@ void main(void) {
 		while((P1IN & BUT1) == 0){
 			// Case if timer triggers the limit
 			if ((TA0CTL & TAIFG) != 0){
-				P1OUT &= ~redLED;
 				P9OUT |= greenLED;
+				break;
 			}
 		}
-
 // Stop timer and set the target
-		TA0CTL &= MC_0;
+		TA0CTL &= ~MC_3;
 		targetTime = TA0R;
-
-//Waits for button 2 to turn off GreenLED
-		if (P9OUT & greenLED != 0){
+// If the greeenLED turned on, wait here for the button to be released, then wait for the reset button to be pressed
+		if ((P9OUT & greenLED) != 0){
+			while((P1IN & BUT1) == 0){}
 			while((P1IN & BUT2) != 0){}
 			while ((P1IN & BUT2) == 0) {}
 			P9OUT &= ~greenLED;
 		}
-
 // Case if timer is withint limit
 		else if( (TA0CTL & TAIFG) == 0){
 			// Set the current count to the targeted count
@@ -78,7 +76,7 @@ void main(void) {
 			P1OUT |= redLED;
 			// Wait until the counter reaches the saved count
         	while ((TA0CCTL0 & CCIFG) == 0) {}
-        	TA0CTL|= MC_0;
+        	TA0CTL &= ~MC_3;
 			P1OUT &= ~redLED;
 		}
 	}
