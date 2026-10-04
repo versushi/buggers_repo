@@ -1,44 +1,43 @@
-// Timer_A continuous mode, with interrupts, flashes LEDs
+// Timer_A up mode, with interrupt, flashes LEDs
 #include <msp430fr6989.h>
-
 #define redLED BIT0 // Red LED at P1.0
 #define greenLED BIT7 // Green LED at P9.7
 
 void main(void) {
-
 	WDTCTL = WDTPW | WDTHOLD; // Stop the Watchdog timer
 	PM5CTL0 &= ~LOCKLPM5; // Enable the GPIO pins
-	P1DIR |= redLED; // Configure pin as output
-	P9DIR |= greenLED; // Configure pin as output
+	P1DIR |= redLED; // Direct pin as output
+	P9DIR |= greenLED; // Direct pin as output
+	
 	P1OUT &= ~redLED; // Turn LED Off
-	P9OUT &= ~greenLED; // Turn LED Off
+	P9OUT |= greenLED; // Turn LED On (alternate flashing)
 
 	// Configure ACLK to the 32 KHz crystal
 	config_ACLK_to_32KHz_crystal();
+	// Configure Channel 0 for up mode with interrupts
+	TA0CCR0 = 32768;  // 1 second @ 32 KHz
+	// TA0CCR0 = 16384;  // 0.5 second @ 32 KHz
 
-	// Configure Timer_A
+	TA0CCTL0 |= CCIE; // Enable Channel 0 CCIE bit
+	TA0CCTL0 &= ~CCIFG; // Clear Channel 0 CCIFG bit
 
-	// Use ACLK, divide by 1, continuous mode, TAR cleared, enable interrupt for rollback-to-zero event
-	TA0CTL = TASSEL_1 | ID_0 | MC_2 | TACLR | TAIE;
-	// Ensure the flag is cleared at the start
-	TA0CTL &= ~TAIFG;
+	// Timer_A: ACLK, div by 1, up mode, clear TAR
+	TA0CTL = TASSEL_1 | ID_0 | MC_1 | TACLR ;
 	// Enable the global interrupt bit (call an intrinsic function)
 	_enable_interrupts();
+	
 	// For part 4 of lab 4, enabling low power mode, I would comment out the above enable_interrupt line
 	// and uncomment the below line 
 	// _low_power_mode_3();
-
-	// Infinite loop... the code waits here between interrupts
 	for(;;) {}
-
 }
 
-	//******* Writing the ISR *******
-	#pragma vector = TIMER0_A1_VECTOR // Link the ISR to the vector
-	__interrupt void T0A1_ISR() {
-		// Interrupt response goes here
-		TA0CTL &= ~TAIFG;
-		P1OUT ^= redLED;
+//*************ISR******************//
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void T0A0_ISR() {
+	// Action goes here
+	P1OUT ^= redLED;
+	P9OUT ^= greenLED;
 }
 
 // Configures ACLK to 32 KHz crystal
