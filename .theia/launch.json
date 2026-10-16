@@ -168,6 +168,28 @@
                 "name": "Lab05.3",
                 "resourceId": "/Lab05.3"
             }
+        },
+        {
+            "name": "Lab06.1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab06.1",
+                "resourceId": "/Lab06.1"
+            },
+            "connections": [
+                {
+                    "name": "TI MSP430 USB1",
+                    "cores": [
+                        {
+                            "name": "MSP430",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

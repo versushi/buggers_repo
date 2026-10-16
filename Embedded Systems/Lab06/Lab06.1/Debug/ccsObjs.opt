@@ -1,0 +1,5 @@
+"./Lab06.1_main.obj"
+"../lnk_msp430fr6989.cmd"
+-llibc.a
+-llibmpu_init.a
+-llibmath.a
