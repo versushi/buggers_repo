@@ -23,10 +23,10 @@ void main(void) {
 	// Ensure the flag is cleared at the start
 	TA0CTL &= ~TAIFG;
 	// Enable the global interrupt bit (call an intrinsic function)
-	_enable_interrupts();
+	// _enable_interrupts();
 	// For part 4 of lab 4, enabling low power mode, I would comment out the above enable_interrupt line
 	// and uncomment the below line 
-	// _low_power_mode_3();
+	_low_power_mode_3();
 
 	// Infinite loop... the code waits here between interrupts
 	for(;;) {}

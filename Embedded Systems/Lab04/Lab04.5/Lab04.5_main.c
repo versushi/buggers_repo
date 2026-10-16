@@ -4,7 +4,7 @@
 #define greenLED BIT7 // Green LED at P9.7
 #define BUT1 BIT1 // Button S1 at Port 1.1
 #define BUT2 BIT2 // Button S2 at Port 1.2
-uint16_t leftRightTracker; // A counter that tracks which position we are in 
+volatile uint16_t leftRightTracker = 4; // A counter that tracks which position we are in 
 
 void main(void) {
 	WDTCTL = WDTPW | WDTHOLD; // Stop the Watchdog timer
@@ -28,10 +28,12 @@ void main(void) {
 	// Timer_A: ACLK, div by 1, Up mode, clear TAR
 	TA0CTL = TASSEL_1 | ID_0 | MC_1 | TACLR ;
 	TA0CCR0 = 32768;
+	TA0CCTL0 |= CCIE;
+	TA0CCTL0 &= ~CCIFG;
 	// Enable the low power mode and global interrupt bit (call an intrinsic function)
 	_enable_interrupts();
 	// Initialize the leftRightTracker counter, Have it start at the "no correction" setting
-	leftRightTracker = 4;
+	
 	for(;;) {
 		if ((leftRightTracker == 1) || (leftRightTracker == 7)) {
 			TA0CCR0 = 4096;
@@ -52,16 +54,23 @@ void main(void) {
 #pragma vector = PORT1_VECTOR // Write the vector name
 __interrupt void Port1_ISR() {
 	if ((P1IFG & BUT1) != 0){
-		leftRightTracker = leftRightTracker - 1;
+		leftRightTracker --;
 		P1IFG &= ~BUT1;
-		_delay_cycles(6557);
 	}
 	else if ((P1IFG & BUT2) != 0){
-		leftRightTracker = leftRightTracker + 1;
-		P1IFG &= ~BUT1;
-		_delay_cycles(6557);
+		leftRightTracker ++;
+		P1IFG &= ~BUT2;
 	}
-	
+
+	// Extra if statment to make sure they lights stay synchronized when returning to stage 4
+	if (leftRightTracker == 4) {
+        P1OUT &= ~redLED;
+        P9OUT &= ~greenLED;
+	}
+
+	_delay_cycles(30000);
+	// Gets rid of any disrupts from bouncing
+	P1IFG &= ~(BUT1 | BUT2);
 }
 
 #pragma vector = TIMER0_A0_VECTOR
@@ -72,10 +81,8 @@ __interrupt void Timer0_ISR(void)
         P1OUT ^= redLED;
     }
     else if (leftRightTracker == 4) {
-		P1OUT &= ~redLED;
-		P9OUT &= ~greenLED;
-        P1OUT |= redLED;
-        P9OUT |= greenLED;
+		 P9OUT ^= greenLED;
+		 P1OUT ^= redLED;
     }
     else {
         P1OUT &= ~redLED;

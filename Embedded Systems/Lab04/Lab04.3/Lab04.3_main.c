@@ -24,12 +24,12 @@ void main(void) {
 	config_ACLK_to_32KHz_crystal();
 
 	// Timer_A: ACLK, div by 1, Continuous mode, clear TAR
-	TA0CTL = TASSEL_1 | ID_0 | MC_2 | TACLR ;
+	// TA0CTL = TASSEL_1 | ID_0 | MC_2 | TACLR ;
 	// Enable the global interrupt bit (call an intrinsic function)
-	_enable_interrupts();
+	//_enable_interrupts();
 	// For part 4 of lab 4, enabling low power mode, I would comment out the above enable_interrupt line
 	// and uncomment the below line 
-	// _low_power_mode_4();
+	_low_power_mode_4();
 	for(;;) {}
 }
 

@@ -15,8 +15,8 @@ void main(void) {
 	// Configure ACLK to the 32 KHz crystal
 	config_ACLK_to_32KHz_crystal();
 	// Configure Channel 0 for up mode with interrupts
-	TA0CCR0 = 32768;  // 1 second @ 32 KHz
-	// TA0CCR0 = 16384;  // 0.5 second @ 32 KHz
+	//TA0CCR0 = 32768;  // 1 second @ 32 KHz
+	 TA0CCR0 = 16384;  // 0.5 second @ 32 KHz
 
 	TA0CCTL0 |= CCIE; // Enable Channel 0 CCIE bit
 	TA0CCTL0 &= ~CCIFG; // Clear Channel 0 CCIFG bit
@@ -24,11 +24,11 @@ void main(void) {
 	// Timer_A: ACLK, div by 1, up mode, clear TAR
 	TA0CTL = TASSEL_1 | ID_0 | MC_1 | TACLR ;
 	// Enable the global interrupt bit (call an intrinsic function)
-	_enable_interrupts();
+	// _enable_interrupts();
 	
 	// For part 4 of lab 4, enabling low power mode, I would comment out the above enable_interrupt line
 	// and uncomment the below line 
-	// _low_power_mode_3();
+	_low_power_mode_3();
 	for(;;) {}
 }
 
