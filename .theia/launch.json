@@ -201,12 +201,12 @@
             }
         },
         {
-            "name": "Lab06.3",
+            "name": "Lab06.4",
             "type": "ccs-debug",
             "request": "launch",
             "projectInfo": {
-                "name": "Lab06.3",
-                "resourceId": "/Lab06.3"
+                "name": "Lab06.4",
+                "resourceId": "/Lab06.4"
             }
         }
     ]
