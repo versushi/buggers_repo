@@ -60,7 +60,7 @@ int main(void)
 			uart_write_string("\033[10;1HRequested");
 			P1IFG &= ~BUT1;
 			P1OUT |= redLED;
-			runway1_RQ = 1;
+			runway1_RQ = 1
 		}
 		if ((P1IFG & BUT1) != 0 && runway1_RQ == 1){
 			uart_write_string("\033[11;1HIn use");

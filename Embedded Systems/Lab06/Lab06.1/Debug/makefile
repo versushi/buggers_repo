@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := F:/CCS/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS
+CG_TOOL_ROOT := C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -129,7 +129,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Tool invocations
 Lab06.1.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'MSP430 Linker - building target: "$@"'
-	"F:/CCS/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR6989__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"Lab06.1.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"F:/CCS/ti/ccs2101/ccs/ccs_base/msp430/include" -i"F:/CCS/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/lib" -i"F:/CCS/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include" -i"F:/CCS/ti/ccs2101/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"F:/CCS/ti/ccs2101/ccs/ccs_base/msp430/lib/FR59xx" --priority --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab06.1_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab06.1.out" $(ORDERED_OBJS)
+	"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/bin/cl430" -vmspx --data_model=restricted --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR6989__ --define=_MPU_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"Lab06.1.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"C:/ti/ccs2101/ccs/ccs_base/msp430/include" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/lib" -i"C:/ti/ccs2101/ccs/tools/compiler/ti-cgt-msp430_21.6.3.LTS/include" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/5xx_6xx_FRxx" -i"C:/ti/ccs2101/ccs/ccs_base/msp430/lib/FR59xx" --priority --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab06.1_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "Lab06.1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 

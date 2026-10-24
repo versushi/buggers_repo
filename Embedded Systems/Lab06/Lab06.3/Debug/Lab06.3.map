@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v21.6.3                     
 ******************************************************************************
->> Linked Sat Oct 17 13:38:12 2026
+>> Linked Tue Oct 20 13:57:06 2026
 
 OUTPUT FILE NAME:   <Lab06.3.out>
 ENTRY POINT SYMBOL: "_c_int00_noinit_noargs_mpu"  address: 00004400
@@ -79,7 +79,7 @@ MEMORY CONFIGURATION
   INT53                 0000fffa   00000002  00000002  00000000  RWIX
   INT54                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FRAM2                 00010000   00013ff8  00000174  00013e84  RWIX
+  FRAM2                 00010000   00013ff8  00000176  00013e82  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -233,33 +233,33 @@ SYSNMI     0    0000fffc    00000002
 .const     0    00004420    00000014     
                   00004420    00000014     Lab06.3_main.obj (.const:.string)
 
-.text      0    00010000    00000174     
+.text      0    00010000    00000176     
                   00010000    00000062     Lab06.3_main.obj (.text:uart_write_uint16)
-                  00010062    0000004c     Lab06.3_main.obj (.text:main)
-                  000100ae    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
-                  000100da    00000028     Lab06.3_main.obj (.text:Initialize_UART_2)
-                  00010102    00000026     Lab06.3_main.obj (.text:config_ACLK_to_32KHz_crystal)
-                  00010128    0000001e     Lab06.3_main.obj (.text:uart_write_string)
-                  00010146    00000016     rts430x_lc_rd_eabi.lib : div16u.asm.obj (.text)
-                  0001015c    0000000e     Lab06.3_main.obj (.text:uart_write_char)
-                  0001016a    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
-                  00010170    00000004                            : pre_init.c.obj (.text:_system_pre_init)
+                  00010062    0000004e     Lab06.3_main.obj (.text:main)
+                  000100b0    0000002c     MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib : mpu_init.o (.text:__mpu_init)
+                  000100dc    00000028     Lab06.3_main.obj (.text:Initialize_UART_2)
+                  00010104    00000026     Lab06.3_main.obj (.text:config_ACLK_to_32KHz_crystal)
+                  0001012a    0000001e     Lab06.3_main.obj (.text:uart_write_string)
+                  00010148    00000016     rts430x_lc_rd_eabi.lib : div16u.asm.obj (.text)
+                  0001015e    0000000e     Lab06.3_main.obj (.text:uart_write_char)
+                  0001016c    00000006     rts430x_lc_rd_eabi.lib : exit.c.obj (.text:abort)
+                  00010172    00000004                            : pre_init.c.obj (.text:_system_pre_init)
 
 MODULE SUMMARY
 
        Module             code   ro data   rw data
        ------             ----   -------   -------
     .\
-       Lab06.3_main.obj   296    20        0      
+       Lab06.3_main.obj   298    20        0      
     +--+------------------+------+---------+---------+
-       Total:             296    20        0      
+       Total:             298    20        0      
                                                   
-    F:\CCS\ti\ccs2101\ccs\ccs_base\msp430\lib\FR59xx\MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib
+    C:\ti\ccs2101\ccs\ccs_base\msp430\lib\FR59xx\MSPMPU_INIT_LIB_CCS_msp430_large_code_restricted_data.lib
        mpu_init.o         44     0         0      
     +--+------------------+------+---------+---------+
        Total:             44     0         0      
                                                   
-    F:\CCS\ti\ccs2101\ccs\tools\compiler\ti-cgt-msp430_21.6.3.LTS\lib\rts430x_lc_rd_eabi.lib
+    C:\ti\ccs2101\ccs\tools\compiler\ti-cgt-msp430_21.6.3.LTS\lib\rts430x_lc_rd_eabi.lib
        boot.c.obj         24     2         0      
        div16u.asm.obj     22     0         0      
        isr_trap.asm.obj   8      0         0      
@@ -298,7 +298,7 @@ MODULE SUMMARY
                                                   
        Stack:             0      0         160    
     +--+------------------+------+---------+---------+
-       Grand Total:       404    78        160    
+       Grand Total:       406    78        160    
 
 
 GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name 
@@ -562,7 +562,7 @@ address   name
 000009ce  AESAXIN_L                   
 000004be  BCD2BIN                     
 000004bc  BIN2BCD                     
-0001016a  C$$EXIT                     
+0001016c  C$$EXIT                     
 0000043e  CAPTIO0CTL                  
 0000043f  CAPTIO0CTL_H                
 0000043e  CAPTIO0CTL_L                
@@ -1036,7 +1036,7 @@ address   name
 00000146  GCCTL1                      
 00000147  GCCTL1_H                    
 00000146  GCCTL1_L                    
-000100da  Initialize_UART_2           
+000100dc  Initialize_UART_2           
 00000a40  LCDBM1                      
 00000a49  LCDBM10                     
 00000a4a  LCDBM11                     
@@ -1722,15 +1722,15 @@ ffffffff  __TI_prof_data_size
 ffffffff  __TI_prof_data_start        
 ffffffff  __c_args__                  
 00000001  __mpu_enable                
-000100ae  __mpu_init                  
-00010146  __mspabi_divu               
-00010146  __mspabi_remu               
+000100b0  __mpu_init                  
+00010148  __mspabi_divu               
+00010148  __mspabi_remu               
 00004400  _c_int00_noinit_noargs_mpu  
 0000fffe  _reset_vector               
 00002360  _stack                      
-00010170  _system_pre_init            
-0001016a  abort                       
-00010102  config_ACLK_to_32KHz_crystal
+00010172  _system_pre_init            
+0001016c  abort                       
+00010104  config_ACLK_to_32KHz_crystal
 00004400  fram_ipe_end                
 00004400  fram_ipe_start              
 00004400  fram_rw_start               
@@ -1740,8 +1740,8 @@ ffffffff  __c_args__
 00001513  mpu_sam_value               
 00000440  mpu_segment_border1         
 00000440  mpu_segment_border2         
-0001015c  uart_write_char             
-00010128  uart_write_string           
+0001015e  uart_write_char             
+0001012a  uart_write_string           
 00010000  uart_write_uint16           
 
 
@@ -3173,16 +3173,16 @@ address   name
 0000fffe  _reset_vector               
 00010000  uart_write_uint16           
 00010062  main                        
-000100ae  __mpu_init                  
-000100da  Initialize_UART_2           
-00010102  config_ACLK_to_32KHz_crystal
-00010128  uart_write_string           
-00010146  __mspabi_divu               
-00010146  __mspabi_remu               
-0001015c  uart_write_char             
-0001016a  C$$EXIT                     
-0001016a  abort                       
-00010170  _system_pre_init            
+000100b0  __mpu_init                  
+000100dc  Initialize_UART_2           
+00010104  config_ACLK_to_32KHz_crystal
+0001012a  uart_write_string           
+00010148  __mspabi_divu               
+00010148  __mspabi_remu               
+0001015e  uart_write_char             
+0001016c  C$$EXIT                     
+0001016c  abort                       
+00010172  _system_pre_init            
 ffffffff  __TI_pprof_out_hndl         
 ffffffff  __TI_prof_data_size         
 ffffffff  __TI_prof_data_start        

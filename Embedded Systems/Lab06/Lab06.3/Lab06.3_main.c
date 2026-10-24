@@ -39,7 +39,7 @@ int main(void)
 	
 
 	uart_write_string("Hello Friends\r\n");
-	uart_write_uint16 (0);
+	uart_write_uint16 (4567);
 	uart_write_string("\r\n");
 	for(;;){}
 }
