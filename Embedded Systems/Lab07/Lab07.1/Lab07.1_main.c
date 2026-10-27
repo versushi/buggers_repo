@@ -190,8 +190,3 @@ void uart_write_char(unsigned char ch){
 	TXBUFFER = ch; // Tx flag goes to 0 and Tx begins!
 	return;
 }
-
-// Configure UART to the popular configuration
-// 9600 baud, 8-bit data, LSB first, no parity bits, 1 stop bit
-// no flow control, oversampling reception
-// Clock: SMCLK @ 1 MHz (1,000,000 Hz)
