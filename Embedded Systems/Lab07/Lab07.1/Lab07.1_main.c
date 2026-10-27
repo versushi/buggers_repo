@@ -1,13 +1,28 @@
 #include <msp430.h> 
 #include <stdint.h>
 
+#define FLAGS UCA1IFG // Contains the transmit & receive flags
+#define RXFLAG UCRXIFG // Receive flag
+#define TXFLAG UCTXIFG // Transmit flag
+#define TXBUFFER UCA1TXBUF // Transmit buffer
+#define RXBUFFER UCA1RXBUF // Receive buffer
+
 void Initialize_UART(void);
 void uart_write_char(unsigned char ch);
 unsigned char uart_read_char(void);
 void uart_write_string (char * str);
+void uart_write_uint16 (unsigned int n);
+
+void Initialize_I2C(void);
+int i2c_read_word(unsigned char, unsigned char, unsigned int*); 
+int i2c_write_word(unsigned char, unsigned char, unsigned int);
+
 
 int main(void)
 {
+	unsigned int manufacturerID;
+    unsigned int deviceID;
+
 	WDTCTL = WDTPW | WDTHOLD; // Stop the Watchdog timer
 	PM5CTL0 &= ~LOCKLPM5; 	// Enable the GPIO pins
 
@@ -16,6 +31,26 @@ int main(void)
 	// (P3SEL1=00, P3SEL0=11) (P2DIR=xx)
 	P3SEL1 &= ~(BIT4|BIT5);
 	P3SEL0 |= (BIT4|BIT5);
+
+	Initialize_UART();
+	uart_write_string("UART working\r\n");
+	Initialize_I2C();
+	uart_write_string("Starting sensor read\r\n");
+	for(;;){
+		i2c_read_word(0x44, 0x7E, &manufacturerID);
+		i2c_read_word(0x44, 0x7F, &deviceID);
+
+		uart_write_string("Manufacturer ID: ");
+		uart_write_uint16(manufacturerID);
+		uart_write_string("\r\n");
+
+		uart_write_string("Device ID: ");
+		uart_write_uint16(deviceID);
+		uart_write_string("\r\n");
+
+        __delay_cycles(1000000); // About 1 second at 1 MHz
+
+	}
 }
 
 void Initialize_I2C(void) {
@@ -36,6 +71,99 @@ void Initialize_I2C(void) {
 	// Chip Data Sheet p. 53 (Should be 400 KHz max)
 	// Exit the reset mode at the end of the configuration
 	UCB1CTLW0 &= ~UCSWRST;
+}
+
+int i2c_read_word(unsigned char i2c_address, unsigned char i2c_reg, unsigned int * data) {
+	unsigned char byte1=0, byte2=0; // Intialize to ensure successful reading
+	UCB1I2CSA = i2c_address; // Set address
+	UCB1IFG &= ~UCTXIFG0;
+	// Transmit a byte (the internal register address)
+	UCB1CTLW0 |= UCTR;
+	UCB1CTLW0 |= UCTXSTT;
+	while((UCB1IFG & UCTXIFG0)==0) {} // Wait for flag to raise
+	UCB1TXBUF = i2c_reg; // Write in the TX buffer
+	while((UCB1IFG & UCTXIFG0)==0) {} // Buffer copied to shift register; Tx in progress; set Stop bit
+	// Repeated Start
+	UCB1CTLW0 &= ~UCTR;
+	UCB1CTLW0 |= UCTXSTT;
+	// Read the first byte
+	while((UCB1IFG & UCRXIFG0)==0) {} // Wait for flag to raise
+	byte1 = UCB1RXBUF;
+	// Assert the Stop signal bit before receiving the last byte
+	UCB1CTLW0 |= UCTXSTP;
+	// Read the second byte
+	while((UCB1IFG & UCRXIFG0)==0) {} // Wait for flag to raise
+	byte2 = UCB1RXBUF;
+	while((UCB1CTLW0 & UCTXSTP)!=0) {}
+	while((UCB1STATW & UCBBUSY)!=0) {}
+	*data = (byte1 << 8) | (byte2 & (unsigned int)0x00FF);
+	return 0;
+}
+
+int i2c_write_word(unsigned char i2c_address, unsigned char i2c_reg, unsigned int data) {
+	unsigned char byte1, byte2;
+	UCB1I2CSA = i2c_address; // Set I2C address
+	byte1 = (data >> 8) & 0xFF; // MSByte
+	byte2 = data & 0xFF; // LSByte
+	UCB1IFG &= ~UCTXIFG0;
+	// Write 3 bytes
+	UCB1CTLW0 |= (UCTR | UCTXSTT);
+	while( (UCB1IFG & UCTXIFG0) == 0) {}
+	UCB1TXBUF = i2c_reg;
+	while( (UCB1IFG & UCTXIFG0) == 0) {}
+	UCB1TXBUF = byte1;
+	while( (UCB1IFG & UCTXIFG0) == 0) {}
+	UCB1TXBUF = byte2;
+	while( (UCB1IFG & UCTXIFG0) == 0) {}
+	UCB1CTLW0 |= UCTXSTP;
+	while( (UCB1CTLW0 & UCTXSTP) != 0 ) {}
+	while((UCB1STATW & UCBBUSY)!=0) {}
+	return 0;
+}
+// Configure UART to the popular configuration
+// 9600 baud, 8-bit data, LSB first, no parity bits, 1 stop bit
+// no flow control, oversampling reception
+// Clock: SMCLK @ 1 MHz (1,000,000 Hz)
+void Initialize_UART(void){
+	// Configure pins to UART functionality
+	P3SEL1 &= ~(BIT4|BIT5);
+	P3SEL0 |= (BIT4|BIT5);
+	// Main configuration register
+	UCA1CTLW0 = UCSWRST; // Engage reset; change all the fields to zero
+	// Most fields in this register, when set to zero, correspond to the
+	// popular configuration
+	UCA1CTLW0 |= UCSSEL_2; // Set clock to SMCLK
+	// Configure the clock dividers and modulators (and enable oversampling)
+	UCA1BRW = 6; // divider
+	// Modulators: UCBRF = 8 = 1000 --> UCBRF3 (bit #3)
+	// UCBRS = 0x20 = 0010 0000 = UCBRS5 (bit #5)
+	UCA1MCTLW = UCBRF3 | UCBRS5 | UCOS16;
+	// Exit the reset state
+	UCA1CTLW0 &= ~UCSWRST;
+}
+
+void uart_write_uint16 (unsigned int n){
+	unsigned int m = 0;
+	char digits[5];
+	// This checks if the number is 0
+	if (n == 0) {
+		uart_write_char('0');
+		return;
+	}
+	
+	while (n > 0) {
+		// Cuts far right digit and puts into array
+        digits[m] = '0' + (n % 10);
+		// Goes to the next spot in array
+        m++;
+		// Makes n smaller ie from 4567 --> 456
+        n /= 10;
+    }
+	// This loop prints the array backwards since it was uploaded into the array backwards
+    while (m > 0) {
+        m--;
+        uart_write_char(digits[m]);
+    }
 }
 
 void uart_write_string (char * str_array){
@@ -67,21 +195,3 @@ void uart_write_char(unsigned char ch){
 // 9600 baud, 8-bit data, LSB first, no parity bits, 1 stop bit
 // no flow control, oversampling reception
 // Clock: SMCLK @ 1 MHz (1,000,000 Hz)
-
-void Initialize_UART(void){
-	// Configure pins to UART functionality
-	P3SEL1 &= ~(BIT4|BIT5);
-	P3SEL0 |= (BIT4|BIT5);
-	// Main configuration register
-	UCA1CTLW0 = UCSWRST; // Engage reset; change all the fields to zero
-	// Most fields in this register, when set to zero, correspond to the
-	// popular configuration
-	UCA1CTLW0 |= UCSSEL_2; // Set clock to SMCLK
-	// Configure the clock dividers and modulators (and enable oversampling)
-	UCA1BRW = 6; // divider
-	// Modulators: UCBRF = 8 = 1000 --> UCBRF3 (bit #3)
-	// UCBRS = 0x20 = 0010 0000 = UCBRS5 (bit #5)
-	UCA1MCTLW = UCBRF3 | UCBRS5 | UCOS16;
-	// Exit the reset state
-	UCA1CTLW0 &= ~UCSWRST;
-}
