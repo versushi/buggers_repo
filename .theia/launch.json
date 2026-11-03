@@ -235,6 +235,33 @@
                 "name": "Lab07.3",
                 "resourceId": "/Lab07.3"
             }
+        },
+        {
+            "name": "Lab08.1",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab08.1",
+                "resourceId": "/Lab08.1"
+            }
+        },
+        {
+            "name": "Lab08.2",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab08.2",
+                "resourceId": "/Lab08.2"
+            }
+        },
+        {
+            "name": "Lab08.3",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "Lab08.3",
+                "resourceId": "/Lab08.3"
+            }
         }
     ]
 }
