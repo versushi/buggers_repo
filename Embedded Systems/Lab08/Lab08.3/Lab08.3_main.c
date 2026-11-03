@@ -48,9 +48,24 @@ int main(void)
 	unsigned int bottomLeft = 127;
 	unsigned int cursorRow = 6;
 	unsigned int cursorCol = 9;
+	unsigned int diagonal1, diagonal2;
+	unsigned int maxDelta;
+	unsigned int previousDelta = 0;
+	unsigned int dangerDisplayed = 0; 
 
 	Initialize_ADC();
     Initialize_UART();
+
+	// Buzzer: P2.7, Timer_B0 channel 6
+	P2DIR |= BIT7;
+	P2SEL1 &= ~BIT7;
+	P2SEL0 |= BIT7;
+
+	// 1 kHz, 50% duty cycle, since SMCLK = 1 MHz
+	TB0CCR0 = 999;
+	TB0CCR6 = 500;
+	TB0CCTL6 = 0;  // Initially silent
+	TB0CTL = TBSSEL_2 | MC_1 | TBCLR;
 
 	// Clear screen, start at row 1
 	uart_write_string("\033[2J\033[H");
@@ -68,7 +83,7 @@ int main(void)
 	uart_write_string("       ....................\r\n");
 	uart_write_string("              BOTTOM\r\n\n\n\n");
 	uart_write_string("  MOVE CURSOR	  MAX DELTA\r\n");
-	uart_write_string("* ADJUST VALUE		  mm\r\n");
+	uart_write_string("* ADJUST VALUE		 0 mm\r\n");
 	uart_write_string("\033[6;9H");
 
 	__enable_interrupt();
@@ -104,41 +119,42 @@ int main(void)
 
 		if (adjustValue == 1){
 			if (cursorRow == 12 && cursorCol == 9){
-				if(y_value < y_up_limit){
+				if (y_value < y_up_limit && bottomLeft < 255) {
 					bottomLeft++;
-				}else if (y_value > y_down_limit){
+				} else if (y_value > y_down_limit && bottomLeft > 0) {
 					bottomLeft--;
 				}
-				uart_write_string("\033[12;9H   ");
-				uart_write_string("\033[12;9H");
+				uart_write_string("\033[12;10H   \033[12;10H");
 				uart_write_uint16(bottomLeft);
+				uart_write_string("\033[12;9H");
 			}else if (cursorRow == 12 && cursorCol == 22){
-				if(y_value < y_up_limit){
+				if (y_value < y_up_limit && bottomRight < 255) {
 					bottomRight++;
-				}else if (y_value > y_down_limit){
+				} else if (y_value > y_down_limit && bottomRight > 0) {
 					bottomRight--;
 				}
-				uart_write_string("\033[12;22H   ");
-				uart_write_string("\033[12;22H");
+				uart_write_string("\033[12;23H   \033[12;23H");
 				uart_write_uint16(bottomRight);
+				uart_write_string("\033[12;22H");
 			}else if (cursorRow == 6 && cursorCol == 9){
-				if(y_value < y_up_limit){
+				if (y_value < y_up_limit && topLeft < 255) {
 					topLeft++;
-				}else if (y_value > y_down_limit){
+				} else if (y_value > y_down_limit && topLeft > 0) {
 					topLeft--;
 				}
-				uart_write_string("\033[6;9H   ");
-				uart_write_string("\033[6;9H");
+				uart_write_string("\033[6;10H");
 				uart_write_uint16(topLeft);
+				uart_write_string("   ");
+				uart_write_string("\033[6;9H");
 			}else if (cursorRow == 6 && cursorCol == 22){
-				if(y_value < y_up_limit){
+				if (y_value < y_up_limit && topRight < 255) {
 					topRight++;
-				}else if (y_value > y_down_limit){
+				} else if (y_value > y_down_limit && topRight > 0) {
 					topRight--;
 				}
-				uart_write_string("\033[6;22H   ");
-				uart_write_string("\033[6;22H");
+				uart_write_string("\033[6;23H   \033[6;23H");
 				uart_write_uint16(topRight);
+				uart_write_string("\033[6;22H");
 			}
 
 		}
@@ -169,9 +185,72 @@ int main(void)
 			}
 		}
 
+		// Difference between top-left and bottom-right
+		if (topLeft >= bottomRight) {
+			diagonal1 = topLeft - bottomRight;
+		} else {
+			diagonal1 = bottomRight - topLeft;
+		}
+
+		// Difference between top-right and bottom-left
+		if (topRight >= bottomLeft) {
+			diagonal2 = topRight - bottomLeft;
+		} else {
+			diagonal2 = bottomLeft - topRight;
+		}
+
+		// Select the larger difference
+		if (diagonal1 >= diagonal2) {
+			maxDelta = diagonal1;
+		} else {
+			maxDelta = diagonal2;
+		}
+		// Only redraw delta when its value changes
+    	if (maxDelta != previousDelta) {
+			uart_write_string("\033[s");
+
+			uart_write_string("\033[19;23H");
+			uart_write_uint16(maxDelta);
+			uart_write_string(" mm     ");
+
+			uart_write_string("\033[u");
+			previousDelta = maxDelta;
+    	}
+
+		// Below lines change the delta, Danger sign, and tone
+		// Save cursor position
+		uart_write_string("\033[s");
+
+		// Status text starts at row 9, column 14
+		uart_write_string("\033[9;14H");
+
+		if (maxDelta >= 11) {
+			TB0CCTL6 = OUTMOD_7;
+
+			if (dangerDisplayed == 0) {
+				uart_write_string("\033[s");
+				uart_write_string("\033[9;14H*DANGER*");
+				uart_write_string("\033[u");
+
+				dangerDisplayed = 1;
+			}
+		} else {
+			TB0CCTL6 = 0;
+			if (dangerDisplayed == 1) {
+                uart_write_string("\033[s");
+                uart_write_string("\033[9;14HBALANCED");
+                uart_write_string("\033[u");
+
+                dangerDisplayed = 0;
+			}
+		}
+
+		// Return to the selected cursor position
+		uart_write_string("\033[u");
+
 		P1OUT ^= redLED;		// Toggle LED
 		__delay_cycles(500000); // About 0.5 second at 1 MHz
-		}
+	}
 	return 0;
 }
 
