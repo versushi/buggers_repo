@@ -7,10 +7,17 @@
 #define TXBUFFER UCA1TXBUF // Transmit buffer
 #define RXBUFFER UCA1RXBUF // Receive buffer
 
+#define MORSE_DOT_CYCLES 100000UL  // About 100 ms if MCLK is 1 MHz
+
 #define BUT1 BIT1 // Button S1 at Port 1.1
 
 volatile unsigned int received;
 
+void initialize_Buzzer(void);
+void buzzer_on(void);
+void buzzer_off(void);
+void morse_play_letter(char letter);
+void morse_play_number(char number);
 void Initialize_UART(void);
 void uart_write_char(unsigned char ch);
 unsigned char uart_read_char(void);
@@ -26,22 +33,76 @@ int main(void)
 	// (P3SEL1=00, P3SEL0=11) (P2DIR=xx)
 	P3SEL1 &= ~(BIT4|BIT5);
 	P3SEL0 |= (BIT4|BIT5);
+
 	Initialize_UART();
 	initialize_Buzzer();
 	
 	uart_write_string("Morse Code Translator\r\n\n");
-	uart_write_string("Type a message to be translated into Morse Code:\r\n");
+	uart_write_string("Type a message to be translated into Morse Code  (only numbers and letters):\r\n");
 	uart_write_string("(Max of message is 15 characters including spaces)\r\n");
-	for(;;){
+
+	char message[16];
+	unsigned int length = 0;
+
+	static const char * const morse_letters[] = {
+		".-",    // A
+		"-...",  // B
+		"-.-.",  // C
+		"-..",   // D
+		".",    // E
+		"..-.",  // F
+		"--.",  // G
+		"....",   // H
+		"..",    // I
+		".---",  // J
+		"-.-",  // K
+		".-..",   // L
+		"--",    // M
+		"-.",  // N
+		"---",  // O
+		".--.",   // P
+		"--.-",    // Q
+		".-.",  // R
+		"...",  // S
+		"-",   // T
+		"..-",    // U
+		"...-",  // V
+		".--",  // W
+		"-..-",   // X
+		"-.--",    // Y
+		"--..",  // Z
+	};
+
+	const char * const morse_numbers[]{
+		"-----",    // 0
+		".----",  	// 1
+		"..---",  	// 2
+		"...--",   	// 3
+		"....-",    // 4
+		".....",  	// 5
+		"-....",  	// 6
+		"--...",   	// 7
+		"---..",    // 8
+		"----.",  	// 9
+	}
+
+	for (;;) {
 		unsigned char received = uart_read_char();
-		char message(15);
-		
-		uart_write_string(received);
-		if (received >= '0' && received <= '9') {
-			uart_write_uint16(received - '0');
-		}
-		while(received == received){
-			received = uart_read_char();
+
+		if (received == '\r' || received == '\n') {
+			if (length == 0) {
+				continue;
+			}
+
+			message[length] = '\0';
+			uart_write_string("\r\nPlaying Morse Code translation of above message\r\n");
+
+			// Add Morse playback here while the completed message is available.
+			length = 0;
+		} else if (received >= ' ' && received <= '~' && length < sizeof message - 1) {
+			message[length] = received;
+			length++;
+			uart_write_char(received);
 		}
 	}
 }
@@ -71,6 +132,37 @@ void buzzer_off(void)
 {
     TB0CCTL6 = 0;      // Force the output low
     TB0CTL   = TBSSEL__SMCLK | MC__STOP | TBCLR;
+}
+
+void morse_play_pattern(const char *pattern)
+{
+    for (; *pattern != '\0'; pattern++) {
+        buzzer_on();
+        if (*pattern == '-') {
+            __delay_cycles(3UL * MORSE_DOT_CYCLES);
+        } else {
+            __delay_cycles(MORSE_DOT_CYCLES);
+        }
+        buzzer_off();
+
+        if (pattern[1] != '\0') {
+            __delay_cycles(MORSE_DOT_CYCLES);
+        }
+    }
+}
+
+void morse_play_letter(char letter)
+{
+    if (letter >= 'A' && letter <= 'Z') {
+        morse_play_pattern(morse_letters[letter - 'A']);
+    }
+}
+
+void morse_play_number(char number)
+{
+    if (number >= '0' && number <= '9') {
+        morse_play_pattern(morse_letters[number - '0']);
+    }
 }
 
 void uart_write_string (char * str_array){

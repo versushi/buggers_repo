@@ -244,6 +244,15 @@
                 "name": "Lab08.2",
                 "resourceId": "/Lab08.2"
             }
+        },
+        {
+            "name": "final_Project",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "final_Project",
+                "resourceId": "/final_Project"
+            }
         }
     ]
 }
