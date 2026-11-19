@@ -160,7 +160,7 @@ __interrupt void Timer_A_ISR(void)
 {
     seconds++;
 
-    if (seconds >= 60) {
+    if (seconds >= 5) {
         seconds = 0;
         minute_elapsed = 1;
         minute ++;
